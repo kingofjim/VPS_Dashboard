@@ -82,6 +82,13 @@ $("#todayspark5").sparkline([3,6,3,9,9,5,4,6,5,6,4,9,7,9,7,4,6,8,9,5,6,7,8,6,7,2
     lineColor: '#436B91',
     fillColor: '#efefef'});
 
+$("#todayspark6").sparkline([2,3,4,6,7,1,2,4,7,3,4,7,3,7,1,2,7,8,3,7,3,7,3,7,7,4,4,2,7,1,3,7,1,3,5,7,8,9,10,11 ], {
+    type: 'line',
+    width: '250',
+    height: '30',
+    lineColor: '#436B91',
+    fillColor: '#efefef'});
+
 
 /* Sparkline plugin section ends */
 
