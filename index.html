@@ -34,6 +34,7 @@
     <link href="css/style-responsive.css" rel="stylesheet"/>
     <link href="css/xcharts.min.css" rel=" stylesheet">
     <link href="css/jquery-ui-1.10.4.min.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
     <link href="css/index.css" rel="stylesheet">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 -->
     <!--[if lt IE 9]>
@@ -50,13 +51,20 @@
 
     <header class="header dark-bg">
         <div class="toggle-nav">
-            <div class="icon-reorder tooltips" data-original-title="Toggle Navigation" data-placement="bottom"><i
-                    class="icon_menu"></i></div>
+            <div class="icon-reorder"><i class="icon_menu"></i></div>
         </div>
 
         <!--logo start-->
         <a href="index.html" class="logo">Nice <span class="lite">Admin</span></a>
         <!--logo end-->
+        <div class="top-nav notification-row">
+            <!-- notificatoin dropdown start-->
+            <ul class="nav pull-right top-menu">
+                <span class="username"> Hi~ User</span>
+                <span><a id="logout">登出</a></span>
+            </ul>
+            <!-- notificatoin dropdown end-->
+        </div>
     </header>
     <!--header end-->
 
@@ -148,50 +156,47 @@
                                 <!--                                <a href="index.html#" class="btn-close"><i class="fa fa-times"></i></a>-->
                             </div>
                         </div>
-                        <div class="panel-body">
+                        <div class="panel-body" style="overflow: auto">
                             <table class="table bootstrap-datatable countries">
                                 <thead>
                                 <tr>
-                                    <th></th>
                                     <th>主機名稱</th>
-                                    <th>CPU</th>
-                                    <th>記憶體</th>
-                                    <th>External IP</th>
-                                    <th>Internal IP</th>
-                                    <th class="bandwidth">頻寬</th>
+                                    <th>映像檔</th>
+                                    <th>IP Address</th>
+                                    <th>規格</th>
+                                    <th>Key</th>
+                                    <th>狀態</th>
+                                    <th></th>
+                                    <th>可用區域</th>
+                                    <th>工作</th>
+                                    <th>電源</th>
+                                    <th>存活</th>
+                                    <th>操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><img src="img/google-symbol.png" style="height:18px; margin-top:-2px;"></td>
                                     <td>gcp-taiwan-qas3123</td>
-                                    <td>2 vCPU</td>
-                                    <td>4 GB</td>
+                                    <td>Ubuntu 19.04</td>
                                     <td>10.140.0.3</td>
-                                    <td>35.17.39.40</td>
-                                    <td>
-                                        <ul class="today-datas">
-                                            <li>
-                                                <div><span id="todayspark5" class="spark"></span></div>
-                                                <div class="datas-text">12,000000 visitors every Month</div>
-                                            </li>
-                                        </ul>
+                                    <td>small-size</td>
+                                    <td>-</td>
+                                    <td>Active</td>
+                                    <td class="lock">
+                                        <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+<!--                                        <i class="fa fa-lock" aria-hidden="true"></i>-->
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td><img src="img/aws_simple_icon.png" style="height:18px; margin-top:-2px;"></td>
-                                    <td>aws-hk-zsew19030</td>
-                                    <td>2 vCPU</td>
-                                    <td>4 GB</td>
-                                    <td>35.23.23.23</td>
-                                    <td>43.13.43.49</td>
+                                    <td>nova</td>
+                                    <td>None</td>
+                                    <td>Running</td>
+                                    <td>2 monts, 1week</td>
                                     <td>
-                                        <ul class="today-datas">
-                                            <li>
-                                                <div><span id="todayspark6" class="spark"></span></div>
-                                                <div class="datas-text">12,000000 visitors every Month</div>
-                                            </li>
-                                        </ul>
+                                        <select>
+                                            <option>Start</option>
+                                            <option>Edit</option>
+                                            <option>View Log</option>
+                                            <option>Delete</option>
+                                        </select>
                                     </td>
                                 </tr>
                                 </tbody>
