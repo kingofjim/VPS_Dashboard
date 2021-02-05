@@ -1,4 +1,4 @@
-var API_URL = "http://localhost:5000"
+var API_URL = "http://172.19.88.251:8774"
 var ttl = localStorage.getItem("openstack-token-ttl");
 var token = localStorage.getItem("openstack-token");
 
@@ -8,9 +8,11 @@ if(!ttl || !token) {
     }
 }
 
-if(Date.parse(ttl) < new Date()) {
-    alert("Token Expired")
-    backToLogin()
+if(window.location.pathname.search("login.html") == -1) {
+    if(Date.parse(ttl) < new Date()) {
+        alert("Token Expired")
+        backToLogin()
+    }
 }
 
 function backToLogin() {

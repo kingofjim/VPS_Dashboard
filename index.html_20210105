@@ -55,12 +55,17 @@
         </div>
 
         <!--logo start-->
-        <a href="index.html" id="logo" class="logo">OPENSTACK<span class="lite">DEMO</span></a>
+        <a href="index.html" class="logo">Nice <span class="lite">Admin</span></a>
         <!--logo end-->
         <div class="top-nav notification-row">
             <!-- notificatoin dropdown start-->
             <ul class="nav pull-right top-menu">
                 <span id="loginuser" class="username"> 
+			  <script type="text/javascript">
+				var loginuser = localStorage.getItem("username");
+				document.getElementById("loginuser").innerHTML = loginuser;
+			  </script>
+			</script>
 		</span>
                 <span><a id="logout" onclick="logout()">登出</a></span>
             </ul>
@@ -112,7 +117,7 @@
                         <i class="fa">
                             <img src="img/server-solid.svg">
                         </i>
-                        <div class="count instance"><span class="used"></span> of <span class="limit"></span></div>
+                        <div class="count">2 of 10</div>
                         <div class="title">Instances</div>
                     </div><!--/.info-box-->
                 </div><!--/.col-->
@@ -122,7 +127,7 @@
                         <i class="fa">
                             <img src="img/microchip-solid.svg">
                         </i>
-                        <div class="count vcpu"><span class="used"></span> of <span class="limit"></span></div>
+                        <div class="count">4 of 10</div>
                         <div class="title">VCPUs</div>
                     </div><!--/.info-box-->
                 </div><!--/.col-->
@@ -132,7 +137,7 @@
                         <i class="fa">
                             <img src="img/memory-solid.svg">
                         </i>
-                        <div class="count ram"><span class="used"></span> of <span class="limit"></span></div>
+                        <div class="count">8G</div>
                         <div class="title">RAM</div>
                     </div><!--/.info-box-->
                 </div><!--/.col-->
@@ -140,7 +145,7 @@
                 <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
                     <div class="info-box green-bg">
                         <i class="fa fa-hdd-o" aria-hidden="true"></i>
-                        <div class="count storage"><span class="used"></span> / <span class="limit"></span></div>
+                        <div class="count">165 / 500GB</div>
                         <div class="title">Storage</div>
                     </div><!--/.info-box-->
                 </div><!--/.col-->
@@ -167,26 +172,31 @@
                                     <th>規格</th>
                                     <th>Key</th>
                                     <th>狀態</th>
+                                    <th></th>
                                     <th>可用區域</th>
                                     <th>工作</th>
                                     <th>電源</th>
-                                    <th>啟用時間</th>
+                                    <th>存活</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
-                                <tbody id="instance-tbody">
-                                <tr id="instance-sample" style="display: none">
-                                    <td class="name">gcp-taiwan-qas3123</td>
-                                    <td class="image">Ubuntu 19.04</td>
-                                    <td class="ip">10.140.0.3</td>
-                                    <td class="spec">small-size</td>
-                                    <td class="key">-</td>
-                                    <td class="status">Active</td>
-                                    <td class="zone">nova</td>
-                                    <td class="work">None</td>
-                                    <td class="power">Running</td>
-                                    <td class="ttl">2 monts, 1week</td>
-                                    <td class="">
+                                <tbody>
+                                <tr>
+                                    <td>gcp-taiwan-qas3123</td>
+                                    <td>Ubuntu 19.04</td>
+                                    <td>10.140.0.3</td>
+                                    <td>small-size</td>
+                                    <td>-</td>
+                                    <td>Active</td>
+                                    <td class="lock">
+                                        <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+<!--                                        <i class="fa fa-lock" aria-hidden="true"></i>-->
+                                    </td>
+                                    <td>nova</td>
+                                    <td>None</td>
+                                    <td>Running</td>
+                                    <td>2 monts, 1week</td>
+                                    <td>
                                         <select>
                                             <option>Start</option>
                                             <option>Edit</option>
@@ -250,117 +260,53 @@
 <script src="js/charts.js"></script>
 <script src="js/jquery.slimscroll.min.js"></script>
 <script>
-    $(function(){
-        $.ajax({
-            type: "GET",
-            url: API_URL+"/v2.1/servers/detail",
-            headers: {"X-Auth-Token" : token},
-            success: function(data) {
-                var servers = data['servers']
-                var tenant_id = servers[0]['tenant_id']
-                console.log(tenant_id)
 
-                // 獲取使用總攬
-                $.ajax({
-                    type: "GET",
-                    headers: {"X-Auth-Token" : token},
-                    url: API_URL+"/v2.1/os-quota-sets/"+tenant_id+"/detail",
-                    success: function(data) {
-                        data = data['quota_set']
-                        let instance_used = data['instances']['in_use']
-                        let instance_limit = data['instances']['limit']
-                        let vcpu_used = data['cores']['in_use']
-                        let vcpu_limit = data['cores']['limit']
-                        let ram_used = data['ram']['in_use']
-                        let ram_limit = data['ram']['limit']
-
-                        $(".instance .used").text(instance_used)
-                        $(".instance .limit").text(instance_limit)
-                        $(".vcpu .used").text(vcpu_used)
-                        $(".vcpu .limit").text(vcpu_limit)
-                        $(".ram .used").text(bytesToSize(ram_used))
-                        $(".ram .limit").text(bytesToSize(ram_limit))
-
-                    }
-
-                })
-
-                // 獲取各instance資訊
-                for (let i=0; i<servers.length; i++) {
-                    $.ajax({
-                        type: "GET",
-                        url: servers[i]['links'][0]['href'],
-                        headers: {"X-Auth-Token" : token},
-                        success: function(data) {
-                            let server = data['server']
-                            let id = server['id']
-                            let name = server['name']
-                            let image_id = ''
-                            if(server['image'] != '') {
-                                 image_id = server['image']['id']
-                            }
-                            let spec_id = server['flavor']['id']
-                            let ip = server['addresses']['Private-Net1'][0]['addr']
-                            let key = server['key_name']
-                            let status = server['status']
-                            let zone = server['OS-EXT-AZ:availability_zone']
-                            let work = server['OS-EXT-STS:task_state']
-                            let power = server['OS-EXT-STS:power_state']
-                            let ttl = server['OS-SRV-USG:launched_at']
-
-                            let instance = $('#instance-sample').clone()
-                            instance.attr('id', id)
-                            $(instance).find('.name').text(name)
-                            $(instance).find('.image').text('')
-                            $(instance).find('.ip').text(ip)
-                            $(instance).find('.spec').text('')
-                            $(instance).find('.key').text(key)
-                            $(instance).find('.status').text(status)
-                            $(instance).find('.zone').text(zone)
-                            $(instance).find('.work').text(work)
-                            $(instance).find('.power').text(power)
-                            $(instance).find('.ttl').text(new Date(ttl).toLocaleString())
-                            instance.show()
-                            instance.appendTo('#instance-tbody')
-
-                            if(image_id != "") {
-                                console.log(image_id)
-                                $.ajax({
-                                    type: "GET",
-                                    url: API_URL+"/v2.1/images/"+image_id,
-                                    headers: {"X-Auth-Token" : token},
-                                    success: function(data) {
-                                        let image_name = data['image']['name']
-                                        $('#'+id+" .image").text(image_name)
-                                    }
-                                })
-                            }
-                            $.ajax({
-                                type: "GET",
-                                url: API_URL+"/v2.1/flavors/"+spec_id,
-                                headers: {"X-Auth-Token" : token},
-                                success: function(data) {
-                                    let spec = data['flavor']['name']
-                                    $('#'+id+" .spec").text(spec)
-                                }
-                            })
-
-                        }
-                    })
-                }
+    //knob
+    $(function () {
+        $(".knob").knob({
+            'draw': function () {
+                $(this.i).val(this.cv + '%')
             }
         })
-    })
+    });
 
-    function bytesToSize(bytes) {
-        var sizes = ['MB', 'GB', 'TB'];
-        if (bytes == 0) return '0 Byte';
-        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-        return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
-    }
+    //carousel
+    $(document).ready(function () {
+        $("#owl-slider").owlCarousel({
+            navigation: true,
+            slideSpeed: 300,
+            paginationSpeed: 400,
+            singleItem: true
+
+        });
+    });
+
+    //custom select box
+
+    $(function () {
+        $('select.styled').customSelect();
+    });
+
+    /* ---------- Map ---------- */
+    $(function () {
+        $('#map').vectorMap({
+            map: 'world_mill_en',
+            series: {
+                regions: [{
+                    values: gdpData,
+                    scale: ['#000', '#000'],
+                    normalizeFunction: 'polynomial'
+                }]
+            },
+            backgroundColor: '#eef3f7',
+            onLabelShow: function (e, el, code) {
+                el.html(el.html() + ' (GDP - ' + gdpData[code] + ')');
+            }
+        });
+    });
+
 
 </script>
-<script src="js/openstackapi.js"></script>
 
 </body>
 </html>

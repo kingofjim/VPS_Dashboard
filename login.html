@@ -77,31 +77,35 @@
                         }
                     }
                 }
-                // console.log(username)
-                // console.log(password)
+                 //console.log(username)
+                 //console.log(password)
                 if(username && password ) {
                     // console.log(API_URL)
                     var xhr = $.ajax({
-                        type: "GET",
+                        type: "POST",
                         // url: API_URL+"/v3/auth/tokens",
                         //url: "http://httpbin.org/anything/asdf",
-                        url: "https://httpbin.org/delay/2",
-                        contentType: "application/json",
-                        data: data,
+                        //url: "https://httpbin.org/delay/2",
+                        url: "http://172.19.88.251:5000/v3/auth/tokens",
+                        contentType: 'application/json',
+                        data: JSON.stringify(data),
                         beforeSend: function() {
                             $("#login-btn").html('').addClass("spinner").blur()
 
                         },
                         success: function (response) {
-                            console.log(xhr)
+                            //console.log(xhr)
                             var token = xhr.getResponseHeader('X-Subject-Token')
-                            if(token in response && expire_at in response.token) {
+                            if('token' in response && 'expires_at' in response.token) {
+				//console.log(response.token.expires_at)
                                 var ttl = response.token.expires_at
                             }
                             if(token && ttl) {
                                 localStorage.setItem("openstack-token", token);
                                 localStorage.setItem("openstack-token-ttl", ttl);
+                                localStorage.setItem("username", username);
                             }
+				//console.log(token, ttl)
                             window.location.href= "./index.html"
                         }
                     }).done(function() {
